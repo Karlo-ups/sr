@@ -1,26 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Redirect</title>
-</head>
-<body>
-
 <script>
-  // 🔧 OVDJE MIJENJAŠ IP KAD SE PROMIJENI
   const baseIP = "http://10.43.144.58";
 
-  // Uzmi ID iz URL-a (?id=stroj1)
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
-  // Ako postoji ID → preusmjeri
   if (id) {
     window.location.href = baseIP + "/strojevi/" + id + "/";
   } else {
-    document.body.innerHTML = "<h2>Greška: nema ID-a</h2>";
+    document.body.innerHTML = "Greška: nema ID-a";
   }
 </script>
-
-</body>
-</html>
