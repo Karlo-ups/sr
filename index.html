@@ -1,25 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Redirect</title>
+<meta charset="UTF-8">
+<title>Redirect</title>
 </head>
 <body>
 
 <script>
-  // 🔧 OVDJE MIJENJAŠ IP KAD SE PROMIJENI
-  const baseIP = "http://10.43.144.71";
 
-  // Uzmi ID iz URL-a (?id=stroj1)
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+// MIJENJAŠ SAMO OVO AKO SE IP PROMIJENI
+const baseIP = "http://10.43.144.71";
 
-  // Ako postoji ID → preusmjeri
-  if (id) {
-    window.location.href = baseIP + "/strojevi/" + id + "/";
-  } else {
-    document.body.innerHTML = "<h2>Greška: nema ID-a</h2>";
-  }
+// POPIS STROJEVA
+const strojevi = {
+
+1: "CAN/Apollo",
+2: "Laser",
+3: "CNC-Haas",
+4: "Pakirka",
+5: "Preša"
+
+};
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+// pronađi naziv stroja
+const stroj = strojevi[id];
+
+if (stroj) {
+
+window.location.href =
+baseIP + "/strojevi/" + stroj + "/";
+
+}
+else {
+
+document.body.innerHTML =
+"<h2>Greška: stroj ne postoji</h2>";
+
+}
+
 </script>
 
 </body>
