@@ -1,82 +1,81 @@
 <!DOCTYPE html>
 <html lang="hr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zagrebačka pivovara - pristup strojevima</title>
 
-    <title>Zagrebačka pivovara - pristup dokumentaciji</title>
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #eef2f7;
+    font-family: Tahoma, Arial, sans-serif;
+    color: #222;
+}
 
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #eef2f7;
-            font-family: Tahoma, Arial, sans-serif;
-            color: #222;
-        }
+.login-box {
+    width: 100%;
+    max-width: 380px;
+    padding: 35px;
+    box-sizing: border-box;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 18px rgba(0,0,0,0.12);
+    text-align: center;
+}
 
-        .login-box {
-            background: white;
-            width: 100%;
-            max-width: 380px;
-            padding: 35px;
-            box-sizing: border-box;
-            border-radius: 12px;
-            box-shadow: 0 3px 18px rgba(0,0,0,0.12);
-            text-align: center;
-        }
+h1 {
+    color: #1f3f75;
+    font-size: 25px;
+    margin-top: 0;
+}
 
-        h1 {
-            color: #1f3f75;
-            font-size: 25px;
-            margin-top: 0;
-        }
+p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
 
-        p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
+input {
+    width: 100%;
+    padding: 13px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 5px;
+    margin-bottom: 15px;
+}
 
-        input {
-            width: 100%;
-            padding: 13px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 18px;
-            text-align: center;
-            letter-spacing: 5px;
-            margin-bottom: 15px;
-        }
+button {
+    width: 100%;
+    padding: 13px;
+    background: #1f3f75;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        button {
-            width: 100%;
-            padding: 13px;
-            background: #1f3f75;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+button:hover {
+    background: #31558f;
+}
 
-        button:hover {
-            background: #31558f;
-        }
-
-        #poruka {
-            color: #c62828;
-            font-size: 13px;
-            margin-top: 15px;
-        }
-    </style>
+#poruka {
+    color: #c62828;
+    font-size: 13px;
+    margin-top: 15px;
+}
+</style>
 </head>
 
 <body>
@@ -85,7 +84,7 @@
 
     <h1>Zagrebačka pivovara</h1>
 
-    <p>Za pristup dokumentaciji strojeva unesite pristupni PIN.</p>
+    <p>Za pristup dokumentaciji strojeva unesite PIN.</p>
 
     <input
         type="password"
@@ -95,7 +94,9 @@
         autocomplete="off"
     >
 
-    <button onclick="provjeriPIN()">PRISTUPI</button>
+    <button type="button" onclick="provjeriPIN()">
+        PRISTUPI
+    </button>
 
     <div id="poruka"></div>
 
@@ -103,14 +104,13 @@
 
 <script>
 
-    // OVDJE MIJENJAŠ PIN
-    const pristupniPIN = "1234";
+// MIJENJAŠ SAMO OVO ZA PROMJENU PIN-a
+const pristupniPIN = "1234";
 
-    // IP ADRESA HFS SERVERA
-    const baseIP = "http://10.43.144.71";
+// MIJENJAŠ SAMO OVO AKO SE IP PROMIJENI
+const baseIP = "http://10.43.144.71";
 
-    // POVEZIVANJE ID-a S MAPOM STROJA
-    // POPIS STROJEVA
+// POPIS STROJEVA
 const strojevi = {
 1: "CAN/Apolo",
 2: "CAN/Cantronic",
@@ -158,40 +158,43 @@ const strojevi = {
 44: "PET/Zracni_Transport"
 };
 
-    // UZMI ID IZ QR KODA
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
+// UZMI ID IZ QR KODA
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
 
-    function provjeriPIN() {
+// PRONAĐI NAZIV STROJA
+const stroj = strojevi[id];
 
-        const uneseniPIN = document.getElementById("pin").value;
-        const odrediste = strojevi[id];
+// PROVJERA PINA
+function provjeriPIN() {
 
-        if (!odrediste) {
-            document.getElementById("poruka").innerText =
-                "Nepostojeći ID stroja.";
-            return;
-        }
+    const uneseniPIN = document.getElementById("pin").value;
+    const poruka = document.getElementById("poruka");
 
-        if (uneseniPIN === pristupniPIN) {
-
-            window.location.href =
-                baseIP + "/" + odrediste + "/";
-
-        } else {
-
-            document.getElementById("poruka").innerText =
-                "Pogrešan PIN. Pokušajte ponovno.";
-
-        }
+    if (!stroj) {
+        poruka.innerText = "Greška: stroj ne postoji.";
+        return;
     }
 
-    // ENTER TIPKA TAKOĐER POTVRĐUJE PIN
-    document.getElementById("pin").addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            provjeriPIN();
-        }
-    });
+    if (uneseniPIN === pristupniPIN) {
+
+        window.location.href = baseIP + "/" + stroj + "/";
+
+    } else {
+
+        poruka.innerText = "Pogrešan PIN. Pokušajte ponovno.";
+        document.getElementById("pin").value = "";
+        document.getElementById("pin").focus();
+
+    }
+}
+
+// POTVRDA PIN-a TIPKOM ENTER
+document.getElementById("pin").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        provjeriPIN();
+    }
+});
 
 </script>
 
