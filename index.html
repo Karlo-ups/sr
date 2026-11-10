@@ -1,17 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="hr">
 <head>
-<meta charset="UTF-8">
-<title>Redirect</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Zagrebačka pivovara - pristup dokumentaciji</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #eef2f7;
+            font-family: Tahoma, Arial, sans-serif;
+            color: #222;
+        }
+
+        .login-box {
+            background: white;
+            width: 100%;
+            max-width: 380px;
+            padding: 35px;
+            box-sizing: border-box;
+            border-radius: 12px;
+            box-shadow: 0 3px 18px rgba(0,0,0,0.12);
+            text-align: center;
+        }
+
+        h1 {
+            color: #1f3f75;
+            font-size: 25px;
+            margin-top: 0;
+        }
+
+        p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 5px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background: #1f3f75;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #31558f;
+        }
+
+        #poruka {
+            color: #c62828;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+    </style>
 </head>
+
 <body>
+
+<div class="login-box">
+
+    <h1>Zagrebačka pivovara</h1>
+
+    <p>Za pristup dokumentaciji strojeva unesite pristupni PIN.</p>
+
+    <input
+        type="password"
+        id="pin"
+        placeholder="Unesite PIN"
+        inputmode="numeric"
+        autocomplete="off"
+    >
+
+    <button onclick="provjeriPIN()">PRISTUPI</button>
+
+    <div id="poruka"></div>
+
+</div>
 
 <script>
 
-// MIJENJAŠ SAMO OVO AKO SE IP PROMIJENI
-const baseIP = "http://10.43.144.71";
+    // OVDJE MIJENJAŠ PIN
+    const pristupniPIN = "1234";
 
-// POPIS STROJEVA
+    // IP ADRESA HFS SERVERA
+    const baseIP = "http://10.43.144.71";
+
+    // POVEZIVANJE ID-a S MAPOM STROJA
+    // POPIS STROJEVA
 const strojevi = {
 1: "CAN/Apolo",
 2: "CAN/Cantronic",
@@ -59,24 +158,40 @@ const strojevi = {
 44: "PET/Zracni_Transport"
 };
 
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+    // UZMI ID IZ QR KODA
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
 
-// pronađi naziv stroja
-const stroj = strojevi[id];
+    function provjeriPIN() {
 
-if (stroj) {
+        const uneseniPIN = document.getElementById("pin").value;
+        const odrediste = strojevi[id];
 
-window.location.href =
-baseIP + "/" + stroj + "/";
+        if (!odrediste) {
+            document.getElementById("poruka").innerText =
+                "Nepostojeći ID stroja.";
+            return;
+        }
 
-}
-else {
+        if (uneseniPIN === pristupniPIN) {
 
-document.body.innerHTML =
-"<h2>Greška: stroj ne postoji</h2>";
+            window.location.href =
+                baseIP + "/strojevi/" + odrediste + "/";
 
-}
+        } else {
+
+            document.getElementById("poruka").innerText =
+                "Pogrešan PIN. Pokušajte ponovno.";
+
+        }
+    }
+
+    // ENTER TIPKA TAKOĐER POTVRĐUJE PIN
+    document.getElementById("pin").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            provjeriPIN();
+        }
+    });
 
 </script>
 
